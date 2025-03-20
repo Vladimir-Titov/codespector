@@ -1,2 +1,2 @@
-async def aireview(*args, **kwargs):
+def aireview(*args, **kwargs):
     pass

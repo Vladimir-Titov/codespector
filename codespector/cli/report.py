@@ -1,2 +1,2 @@
-async def save_report(*args, **kwargs):
+def save_report(*args, **kwargs):
     pass
