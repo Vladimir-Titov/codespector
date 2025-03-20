@@ -1,12 +1,13 @@
 import subprocess
-import json
+import ujson
 import os
 
 
-def prepare(*args, **kwargs):
+def prepare(*args, **kwargs) -> str:
     name_only_file = _prepare_name_only_file(*args, **kwargs)
-    code_changes = _prepare_diff_file(name_only_file, *args, **kwargs)
-    return code_changes
+    diff_filename = _prepare_diff_file(name_only_file, *args, **kwargs)
+    return diff_filename
+
 
 def _prepare_diff_file(name_only_filename: str, *args, **kwargs):
     diff_output = subprocess.run(['git', 'diff', 'origin/master'], stdout=subprocess.PIPE, text=True).stdout
@@ -21,27 +22,26 @@ def _prepare_diff_file(name_only_filename: str, *args, **kwargs):
         f.write('\n'.join(filtered_diff))
 
     diff_json = {'diff': '\n'.join(filtered_diff)}
-    with open('diff.json', 'w', encoding='utf-8') as f:
-        json.dump(diff_json, f, indent=4, ensure_ascii=False)
+    diff_filename = 'diff.json'
+    with open(diff_filename, 'w', encoding='utf-8') as f:
+        ujson.dump(diff_json, f, indent=4, ensure_ascii=False)
 
     print('Файл diff.json успешно создан.')
 
-    if os.path.exists('original_files_temp.json'):
-        with open('original_files_temp.json', 'r', encoding='utf-8') as f:
-            original_files_data = json.load(f)
+    with open(name_only_filename, 'r', encoding='utf-8') as f:
+        original_files_data = ujson.load(f)
 
-        with open('diff.json', 'r', encoding='utf-8') as f:
-            diff_data = json.load(f)
+    with open(diff_filename, 'r', encoding='utf-8') as f:
+        diff_data = ujson.load(f)
 
-        combined_data = {**original_files_data, **diff_data}
+    combined_data = {**original_files_data, **diff_data}
 
-        with open('combined.json', 'w', encoding='utf-8') as f:
-            json.dump(combined_data, f, indent=4, ensure_ascii=False)
+    with open('combined.json', 'w', encoding='utf-8') as f:
+        ujson.dump(combined_data, f, indent=4, ensure_ascii=False)
 
-        os.replace('combined.json', 'diff.json')
-        print('Файлы original_files_temp.json и diff.json объединены в diff.json.')
-    else:
-        print('Файл original_files_temp.json не найден, создан только diff.json.')
+    os.replace('combined.json', diff_filename)
+    print('Файлы original_files_temp.json и diff.json объединены в diff.json.')
+    return diff_filename
 
 
 def _prepare_name_only_file(*args, **kwargs):
@@ -62,6 +62,6 @@ def _prepare_name_only_file(*args, **kwargs):
             result['original files'].append({'filename': file, 'content': content})
     filename = 'original_files_temp.json'
     with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(result, f, indent=4, ensure_ascii=False)
+        ujson.dump(result, f, indent=4, ensure_ascii=False)
 
     return filename
