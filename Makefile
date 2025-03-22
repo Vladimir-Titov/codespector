@@ -8,3 +8,6 @@ format:
 fix:
 	@ruff check . --fix
 	@ruff format .
+
+test:
+	@pytest tests -vv
