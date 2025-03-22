@@ -1,6 +1,5 @@
 from .prepare import CodeSpectorDataPreparer
 from .reviewer import CodeSpectorReviewer
-from loguru import logger
 
 
 class LocalCodespector:
