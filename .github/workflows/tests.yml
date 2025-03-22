@@ -29,7 +29,8 @@ jobs:
         uv sync --all-extras
     - name: Lint with ruff
       run: |
-        make lint
+        uvx ruff check . --fix
+        uvx ruff format . --check
     - name: Test with pytest
       run: |
-        make test
+        uv run pytest -vv
