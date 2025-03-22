@@ -1,6 +1,5 @@
 import os.path
 from dataclasses import dataclass
-from typing import Self
 
 import ujson
 import requests
@@ -22,7 +21,7 @@ class AgentInfo:
     headers: dict
 
     @classmethod
-    def create(cls, chat_agent: str, chat_token: str, chat_model: str | None = None) -> Self:
+    def create(cls, chat_agent: str, chat_token: str, chat_model: str | None = None) -> 'AgentInfo':
         url = AGENT_URL_MAPPING[chat_agent]
         model = chat_model if chat_model else DEFAULT_AGENT_MODEL[chat_agent]
         headers = {'Authorization': f'Bearer {chat_token}'}
