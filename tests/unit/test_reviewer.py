@@ -65,7 +65,7 @@ def test_send_to_review(reviewer):
             '[\n    "file1.py",\n    "file2.py"\n]'
         )
         mock_file.assert_any_call(os.path.join('test_output', 'response.json'), 'w', encoding='utf-8')
-        mock_file.assert_any_call(os.path.join('test_output', 'result.txt'), 'w', encoding='utf-8')
+        mock_file.assert_any_call(os.path.join('test_output', 'result.md'), 'w', encoding='utf-8')
 
 
 def test_start(reviewer):
