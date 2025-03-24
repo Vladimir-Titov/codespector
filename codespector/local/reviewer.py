@@ -51,7 +51,7 @@ class CodeSpectorReviewer:
 
         self.request_file = 'request.json'
         self.response_file = 'response.json'
-        self.result_file = 'result.txt'
+        self.result_file = 'result.md'
 
     def _request_to_chat_agent(self, prompt: str):
         agent_info = AgentInfo.create(self.chat_agent, self.chat_token, self.chat_model)
