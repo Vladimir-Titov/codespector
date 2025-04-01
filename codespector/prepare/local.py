@@ -2,8 +2,10 @@ import json
 import subprocess
 import os
 
+from codespector.base import BasePipe
 
-class CodeSpectorDataPreparer:
+
+class CodeSpectorDataPreparer(BasePipe):
     def __init__(
         self,
         output_dir: str,

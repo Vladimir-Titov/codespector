@@ -1,5 +1,5 @@
-from .prepare import CodeSpectorDataPreparer
-from .reviewer import CodeSpectorReviewer
+from codespector.prepare.local import CodeSpectorDataPreparer
+from codespector.reviewer import CodeSpectorReviewer
 
 
 class LocalCodespector:

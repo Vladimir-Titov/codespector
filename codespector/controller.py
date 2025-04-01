@@ -1,6 +1,6 @@
 from codespector import local
-from loguru import logger
 from .errors import NotValidCfgError
+
 
 class CodeSpectorController:
     def __init__(
@@ -34,7 +34,6 @@ class CodeSpectorController:
             self.mode = 'diff_link'
         else:
             self.mode = 'local'
-
 
     def start(self):
         self.initialize()

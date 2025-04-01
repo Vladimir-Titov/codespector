@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, mock_open
-from codespector.local.reviewer import CodeSpectorReviewer
+from codespector.reviewer import CodeSpectorReviewer
 import os
 import json
 from unittest.mock import MagicMock
