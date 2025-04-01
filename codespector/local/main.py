@@ -28,8 +28,8 @@ class LocalCodespector:
             output_dir=self.output_dir,
             chat_model=self.chat_model,
         )
-        self.processes = [self.data_preparer, self.reviewer]
+        self.pipeline = [self.data_preparer, self.reviewer]
 
     def review(self):
-        for process in self.processes:
-            process.start()
+        for pipe in self.pipeline:
+            pipe.start()

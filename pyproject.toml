@@ -1,6 +1,6 @@
 [project]
 name = "codespector"
-version = "0.1.2"
+version = "0.2.0"
 authors = [
     { name = "vtitov", email = "v.v.titov94@gmail.com" }
 ]
@@ -12,7 +12,6 @@ dependencies = [
     "environs>=14.1.1",
     "loguru>=0.7.3",
     "requests>=2.32.3",
-    "ujson>=5.10.0",
 ]
 
 classifiers = [

@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, mock_open
 from codespector.local.reviewer import CodeSpectorReviewer
 import os
-import ujson
+import json
 from unittest.mock import MagicMock
 
 
@@ -49,9 +49,9 @@ def test_send_to_review(reviewer):
     mock_response.json.return_value = {'choices': [{'message': {'content': 'Test response'}}]}
 
     with (
-        patch('builtins.open', mock_open(read_data=ujson.dumps(diff_data))) as mock_file,
+        patch('builtins.open', mock_open(read_data=json.dumps(diff_data))) as mock_file,
         patch.object(reviewer, '_request_to_chat_agent', return_value=mock_response) as mock_request,
-        patch('ujson.dump') as _,
+        patch('json.dump') as _,
     ):
         reviewer.send_to_review()
 

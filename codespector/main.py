@@ -13,6 +13,25 @@ env.read_env(path=str(BASE_PATH / '.env'))
 
 
 @click.option(
+    '--git-token',
+    type=str,
+    help='Token for access git management system via api. Required if u use pass request_link',
+    envvar='CODESPECTOR_GIT_ACCESS_TOKEN',
+    show_envar=True,
+)
+@click.option(
+    '--prompt-content',
+    type=str,
+    help='Prompt content which included to review prompt',
+    envvar='CODESPECTOR_PROMPT_CONTENT',
+    show_envvar=True,
+)
+@click.option(
+    '--request-link',
+    type=str,
+    help='Link to the open pull or merge request',
+)
+@click.option(
     '--system-content',
     type=str,
     default='Ты код ревьювер. Отвечай на русском языке.',
@@ -56,12 +75,6 @@ env.read_env(path=str(BASE_PATH / '.env'))
     envvar='CODESPECTOR_CHAT_TOKEN',
     show_envvar=True,
 )
-@click.option(
-    '--mode',
-    type=click.Choice(['local'], case_sensitive=False),
-    default='local',
-    help='Choose the mode of the application',
-)
 @click.version_option(message='%(version)s')
 @click.command()
 def main(*args, **kwargs):
@@ -72,7 +85,7 @@ def start(*args, **kwargs):
     codespector = CodeSpectorController(*args, **kwargs)
     try:
         codespector.start()
-        logger.info('Review completed successfully.See result.txt in {} directory', kwargs['output_dir'])
+        logger.info('Review completed successfully.See result in {} directory', kwargs['output_dir'])
     except Exception as e:
         logger.error('Error while review: {}', e)
 

@@ -1,7 +1,7 @@
 import os.path
 from dataclasses import dataclass
 
-import ujson
+import json
 import requests
 
 from loguru import logger
@@ -61,7 +61,7 @@ class CodeSpectorReviewer:
         }
 
         with open(os.path.join(self.output_dir, self.request_file), 'w', encoding='utf-8') as f:
-            ujson.dump(request_data, f, indent=4, ensure_ascii=False)
+            json.dump(request_data, f, indent=4, ensure_ascii=False)
 
         response = requests.post(
             agent_info.url,
@@ -74,12 +74,12 @@ class CodeSpectorReviewer:
 
     def send_to_review(self):
         with open(os.path.join(self.output_dir, self.diff_file), 'r', encoding='utf-8') as f:
-            diff_data = ujson.load(f)
+            diff_data = json.load(f)
 
         diff_content = diff_data.get('diff', '')
         original_files = diff_data.get('original files', [])
 
-        original_files_str = ujson.dumps(original_files, indent=4, ensure_ascii=False)
+        original_files_str = json.dumps(original_files, indent=4, ensure_ascii=False)
 
         prompt = (
             'Пожалуйста, проверь следующие изменения в коде на наличие очевидных проблем с качеством или безопасностью. '
@@ -96,7 +96,7 @@ class CodeSpectorReviewer:
             raise e
 
         with open(os.path.join(self.output_dir, self.response_file), 'w', encoding='utf-8') as f:
-            ujson.dump(response.json(), f, indent=4, ensure_ascii=False)
+            json.dump(response.json(), f, indent=4, ensure_ascii=False)
 
         resp = response.json()
         clear_response = resp['choices'][0]['message']['content']
