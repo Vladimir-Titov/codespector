@@ -34,7 +34,6 @@ env.read_env(path=str(BASE_PATH / '.env'))
 @click.option(
     '--system-content',
     type=str,
-    default='Ты код ревьювер. Отвечай на русском языке.',
     envvar='CODESPECTOR_SYSTEM_CONTENT',
     show_envvar=True,
     help='Content which used in system field for agent',
@@ -42,7 +41,6 @@ env.read_env(path=str(BASE_PATH / '.env'))
 @click.option(
     '--output-dir',
     type=str,
-    default='codespector',
     envvar='CODESPECTOR_OUTPUT_DIR',
     show_envvar=True,
     help='Select the output directory',
@@ -51,7 +49,6 @@ env.read_env(path=str(BASE_PATH / '.env'))
     '-b',
     '--compare-branch',
     type=str,
-    default='develop',
     help='Select the branch to compare the current one with',
 )
 @click.option(
@@ -59,7 +56,6 @@ env.read_env(path=str(BASE_PATH / '.env'))
     type=click.Choice(['codestral', 'chatgpt'], case_sensitive=False),
     envvar='CODESPECTOR_CHAT_AGENT',
     show_envvar=True,
-    default='codestral',
     help='Choose the chat agent to use',
 )
 @click.option(
@@ -85,7 +81,6 @@ def start(*args, **kwargs):
     codespector = CodeSpectorController(*args, **kwargs)
     try:
         codespector.start()
-        logger.info('Review completed successfully.See result in {} directory', kwargs['output_dir'])
     except Exception as e:
         logger.error('Error while review: {}', e)
 

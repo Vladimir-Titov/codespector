@@ -1,8 +1,9 @@
+from codespector.codespectors.base import BaseCodeSpector
 from codespector.prepare.local import CodeSpectorDataPreparer
 from codespector.reviewer import CodeSpectorReviewer
 
 
-class LocalCodespector:
+class LocalCodeSpector(BaseCodeSpector):
     def __init__(
         self,
         chat_token: str,
