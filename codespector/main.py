@@ -3,6 +3,7 @@ from pathlib import Path
 import click
 from environs import Env
 
+from codespector.codespector import CodeSpector
 from .controller import CodeSpectorController
 from loguru import logger
 
@@ -78,9 +79,9 @@ def main(*args, **kwargs):
 
 
 def start(*args, **kwargs):
-    codespector = CodeSpectorController(*args, **kwargs)
+    codespector = CodeSpector(*args, **kwargs)
     try:
-        codespector.start()
+        codespector.review()
     except Exception as e:
         logger.error('Error while review: {}', e)
 
