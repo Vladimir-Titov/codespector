@@ -4,7 +4,6 @@ import click
 from environs import Env
 
 from codespector.codespector import CodeSpector
-from .controller import CodeSpectorController
 from loguru import logger
 
 BASE_PATH = Path(__file__).parent.parent

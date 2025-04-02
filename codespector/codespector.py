@@ -26,7 +26,12 @@ class CodeSpector:
         self.prompt_content = prompt_content
         self.git_token = git_token
 
-        self.data_preparer = CodeSpectorDataPreparer(output_dir=self.output_dir, compare_branch=self.compare_branch)
+        self.data_preparer = CodeSpectorDataPreparer(
+            output_dir=self.output_dir,
+            compare_branch=self.compare_branch,
+            request_link=self.request_link,
+            git_token=self.git_token,
+        )
         self.reviewer = CodeSpectorReviewer(
             diff_file=self.data_preparer.combined_file,
             chat_token=self.chat_token,

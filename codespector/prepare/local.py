@@ -9,10 +9,14 @@ class CodeSpectorDataPreparer(BasePipe):
     def __init__(
         self,
         output_dir: str,
-        compare_branch: str,
+        compare_branch: str | None,
+        git_token: str | None,
+        request_link: str | None,
     ):
         self.output_dir = output_dir
         self.compare_branch = compare_branch
+        self.git_token = git_token
+        self.request_link = request_link
 
         self.original_files_tmp = 'original_files_tmp.json'
         self.code_changes_only = 'code_changes_only.txt'
