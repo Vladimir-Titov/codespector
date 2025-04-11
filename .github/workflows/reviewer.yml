@@ -34,8 +34,8 @@ jobs:
       - name: Run Codespector
         env:
           CODESPECTOR_CHAT_TOKEN: ${{ secrets.CODESPECTOR_CHAT_TOKEN }}
-          CODESPECTOR_SYSTEM_CONTENT: ${{ secrets.$CODESPECTOR_SYSTEM_CONTENT }}
-          CODESPECTOR_PROMPT_CONTENT: ${{ secrets.$CODESPECTOR_PROMPT_CONTENT }}
+          CODESPECTOR_SYSTEM_CONTENT: ${{ secrets.CODESPECTOR_SYSTEM_CONTENT }}
+          CODESPECTOR_PROMPT_CONTENT: ${{ secrets.CODESPECTOR_PROMPT_CONTENT }}
           CODESPECTOR_RESULT_FILE: ${{ secrets.CODESPECTOR_RESULT_FILE }}
           CODESPECTOR_CHAT_AGENT: ${{ secrets.CODESPECTOR_CHAT_AGENT }}
         run: |
@@ -45,7 +45,7 @@ jobs:
             --compare-branch origin/${{ github.base_ref }}...HEAD
           --system-content $CODESPECTOR_SYSTEM_CONTENT
           --prompt-content $CODESPECTOR_PROMPT_CONTENT
-          --result-file CODESPECTOR_RESULT_FILE
+          --result-file $CODESPECTOR_RESULT_FILE
 
       - name: Post review comment
         env:
