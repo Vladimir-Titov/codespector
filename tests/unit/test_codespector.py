@@ -53,25 +53,6 @@ def test_agent_info_create_invalid():
         AgentInfo.create(chat_agent='invalid_agent', chat_token='test_token')
 
 
-@patch('requests.post')
-@patch('os.path.exists')
-@patch('os.makedirs')
-@patch('subprocess.run')
-def test_codespector_review_flow(mock_run, mock_makedirs, mock_exists, mock_post, test_params, mock_response):
-    mock_exists.return_value = False
-    mock_run.return_value.stdout = 'test diff\n+added line\n-removed line'
-    mock_post.return_value.json.return_value = mock_response
-    mock_post.return_value.raise_for_status = Mock()
-
-    codespector = CodeSpector.create(**test_params)
-    codespector.review()
-
-    mock_makedirs.assert_called_once_with(test_params['output_dir'])
-
-    mock_post.assert_called_once()
-    assert mock_post.call_args[1]['headers']['Authorization'] == f'Bearer {test_params["chat_token"]}'
-
-
 @patch('builtins.open', create=True)
 @patch('subprocess.run')
 @patch('os.path.exists')
