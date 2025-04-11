@@ -1,35 +1,14 @@
 import os.path
-from dataclasses import dataclass
 
 import json
+from urllib.error import HTTPError
+
 import requests
 
 from loguru import logger
 
-AGENT_URL_MAPPING = {
-    'codestral': 'https://api.mistral.ai/v1/chat/completions',
-    'chatgpt': 'https://api.openai.com/v1/chat/completions',
-}
-
-DEFAULT_AGENT_MODEL = {'codestral': 'codestral-latest', 'chatgpt': 'gpt-4o'}
-
-
-@dataclass
-class AgentInfo:
-    model: str
-    url: str
-    headers: dict
-
-    @classmethod
-    def create(cls, chat_agent: str, chat_token: str, chat_model: str | None = None) -> 'AgentInfo':
-        url = AGENT_URL_MAPPING[chat_agent]
-        model = chat_model if chat_model else DEFAULT_AGENT_MODEL[chat_agent]
-        headers = {'Authorization': f'Bearer {chat_token}'}
-        return cls(
-            url=url,
-            model=model,
-            headers=headers,
-        )
+from codespector.errors import AppError
+from codespector.types import AgentInfo
 
 
 class CodeSpectorReviewer:
@@ -38,25 +17,29 @@ class CodeSpectorReviewer:
         diff_file: str,
         chat_token: str,
         chat_agent: str,
-        chat_model: str | None,
+        chat_model: str,
         system_content: str,
+        prompt_content: str,
         output_dir: str,
+        result_file: str,
+        agent_info: AgentInfo,
     ):
         self.diff_file = diff_file
         self.chat_token = chat_token
         self.chat_agent = chat_agent
         self.chat_model = chat_model
         self.system_content = system_content
+        self.prompt_content = prompt_content
         self.output_dir = output_dir
+        self.result_file = result_file
+        self.agent_info = agent_info
 
         self.request_file = 'request.json'
         self.response_file = 'response.json'
-        self.result_file = 'result.md'
 
     def _request_to_chat_agent(self, prompt: str):
-        agent_info = AgentInfo.create(self.chat_agent, self.chat_token, self.chat_model)
         request_data = {
-            'model': agent_info.model,
+            'model': self.agent_info.model,
             'messages': [{'role': 'system', 'content': self.system_content}, {'role': 'user', 'content': prompt}],
         }
 
@@ -64,9 +47,9 @@ class CodeSpectorReviewer:
             json.dump(request_data, f, indent=4, ensure_ascii=False)
 
         response = requests.post(
-            agent_info.url,
+            self.agent_info.url,
             json=request_data,
-            headers=agent_info.headers,
+            headers=self.agent_info.headers,
             timeout=100,
         )
         response.raise_for_status()
@@ -81,19 +64,12 @@ class CodeSpectorReviewer:
 
         original_files_str = json.dumps(original_files, indent=4, ensure_ascii=False)
 
-        prompt = (
-            'Пожалуйста, проверь следующие изменения в коде на наличие очевидных проблем с качеством или безопасностью. '
-            'Предоставь краткий отчет в формате markdown:\n\n'
-            'DIFF:\n'
-            f'{diff_content}\n\n'
-            'ORIGINAL FILES:\n'
-            f'{original_files_str}'
-        )
+        prompt = f'{self.prompt_content}\n\nDIFF:\n{diff_content}\n\nORIGINAL FILES:\n{original_files_str}'
         try:
             response = self._request_to_chat_agent(prompt=prompt)
-        except Exception as e:
+        except HTTPError as e:
             logger.error('Error while send request: {}', e)
-            raise e
+            raise AppError('Error while send request') from e
 
         with open(os.path.join(self.output_dir, self.response_file), 'w', encoding='utf-8') as f:
             json.dump(response.json(), f, indent=4, ensure_ascii=False)
