@@ -20,7 +20,7 @@ jobs:
 
       - name: Print Environment Variables and Secrets
         env:
-          CODESPECTOR_CHAT_TOKEN: ${{ secrets.CODESPECTOR_CHAT_TOKEN }}
+          CODESPECTOR_CHAT_TOKEN: ${{ CODESPECTOR.CODESPECTOR_CHAT_TOKEN }}
           CODESPECTOR_SYSTEM_CONTENT: ${{ secrets.CODESPECTOR_SYSTEM_CONTENT }}
           CODESPECTOR_PROMPT_CONTENT: ${{ secrets.CODESPECTOR_PROMPT_CONTENT }}
           CODESPECTOR_RESULT_FILE: ${{ secrets.CODESPECTOR_RESULT_FILE }}
