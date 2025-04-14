@@ -12,6 +12,13 @@ env.read_env(path=str(BASE_PATH / '.env'))
 
 
 @click.option(
+    '--exclude-file-ext',
+    type=list,
+    envvar='CODESPECTOR_EXCLUDE_FILE_EXT',
+    help='Exclude file extensions from the review',
+    show_envvar=True,
+)
+@click.option(
     '--result-file',
     type=str,
     help='Set file for saving the result',

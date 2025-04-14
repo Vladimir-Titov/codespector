@@ -18,6 +18,7 @@ class CodeSpector:
         result_file: str,
         output_dir: str,
         chat_model: str | None = None,
+        exclude_file_ext: list[str] | None = None,
     ):
         self.chat_token = chat_token
         self.chat_agent = chat_agent
@@ -30,6 +31,7 @@ class CodeSpector:
         self.pipeline = pipeline
         self.result_file = result_file
         self.chat_model = chat_model
+        self.exclude_file_exc: list[str] | None = (None,)
 
     @classmethod
     def create(
@@ -42,6 +44,7 @@ class CodeSpector:
         result_file: str,
         output_dir: str,
         chat_model: str | None = None,
+        exclude_file_ext: list[str] | None = None,
     ) -> 'CodeSpector':
         agent_info = AgentInfo.create(
             chat_agent=chat_agent,
@@ -51,6 +54,7 @@ class CodeSpector:
         data_preparer = CodeSpectorDataPreparer(
             output_dir=output_dir,
             compare_branch=compare_branch,
+            exclude_file_ext=exclude_file_ext,
         )
         reviewer = CodeSpectorReviewer(
             diff_file=data_preparer.combined_file,
@@ -77,6 +81,7 @@ class CodeSpector:
             pipeline=pipeline,
             output_dir=output_dir,
             result_file=result_file,
+            exclude_file_ext=exclude_file_ext,
         )
 
     def review(self):

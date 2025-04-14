@@ -10,9 +10,11 @@ class CodeSpectorDataPreparer(BasePipe):
         self,
         output_dir: str,
         compare_branch: str,
+        exclude_file_ext: list[str] | None = None,
     ):
         self.output_dir = output_dir
         self.compare_branch = compare_branch
+        self.exclude_file_ext = exclude_file_ext
 
         self.original_files_tmp = 'original_files_tmp.json'
         self.code_changes_only = 'code_changes_only.txt'
@@ -61,8 +63,9 @@ class CodeSpectorDataPreparer(BasePipe):
         result = {'original files': []}
 
         for file in changed_files:
-            if not file.endswith('.py'):
-                continue
+            if self.exclude_file_ext:
+                if file.endswith(tuple(self.exclude_file_ext)):
+                    continue
 
             if os.path.isfile(file):
                 with open(file, 'r', encoding='utf-8') as f:
