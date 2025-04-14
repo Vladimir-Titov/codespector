@@ -7,7 +7,7 @@ on:
 env:
   CODESPECTOR_RESULT_FILE: "codespector/result.md"
   CODESPECTOR_COMBINED_FILE: "codespector/combined.json"
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
+  ENV_VAR: ${{ vars.ENV_CONTEXT_VAR }}
 
 jobs:
   codespector:
@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Codespector
+      - name: Print Environment Variables and Secrets
         env:
           CODESPECTOR_CHAT_TOKEN: ${{ secrets.CODESPECTOR_CHAT_TOKEN }}
           CODESPECTOR_SYSTEM_CONTENT: ${{ secrets.CODESPECTOR_SYSTEM_CONTENT }}
@@ -26,7 +26,9 @@ jobs:
           CODESPECTOR_RESULT_FILE: ${{ secrets.CODESPECTOR_RESULT_FILE }}
           CODESPECTOR_CHAT_AGENT: ${{ secrets.CODESPECTOR_CHAT_AGENT }}
         run: |
-          echo "repository variable : $CODESPECTOR_CHAT_TOKEN"
-          echo "organization variable : $CODESPECTOR_SYSTEM_CONTENT"
-          echo "overridden variable : $CODESPECTOR_PROMPT_CONTENT"
-          echo "variable from shell environment : $env_var"
+          echo "Repository variable: $ENV_VAR"
+          echo "Secret CODESPECTOR_CHAT_TOKEN: $CODESPECTOR_CHAT_TOKEN"
+          echo "Secret CODESPECTOR_SYSTEM_CONTENT: $CODESPECTOR_SYSTEM_CONTENT"
+          echo "Secret CODESPECTOR_PROMPT_CONTENT: $CODESPECTOR_PROMPT_CONTENT"
+          echo "Secret CODESPECTOR_RESULT_FILE: $CODESPECTOR_RESULT_FILE"
+          echo "Secret CODESPECTOR_CHAT_AGENT: $CODESPECTOR_CHAT_AGENT"
