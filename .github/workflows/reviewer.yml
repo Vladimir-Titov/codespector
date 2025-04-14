@@ -1,33 +1,32 @@
+name: Codespector Review
+
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "*" ]
+    types: [opened, synchronize]
+
 env:
-  # Setting an environment variable with the value of a configuration variable
+  CODESPECTOR_RESULT_FILE: "codespector/result.md"
+  CODESPECTOR_COMBINED_FILE: "codespector/combined.json"
   env_var: ${{ vars.ENV_CONTEXT_VAR }}
 
 jobs:
-  display-variables:
-    name: ${{ vars.JOB_NAME }}
-    # You can use configuration variables with the `vars` context for dynamic jobs
-    if: ${{ vars.USE_VARIABLES == 'true' }}
-    runs-on: ${{ vars.RUNNER }}
-    environment: ${{ vars.ENVIRONMENT_STAGE }}
-    steps:
-    - name: Use variables
-      run: |
-        echo "repository variable : $REPOSITORY_VAR"
-        echo "organization variable : $ORGANIZATION_VAR"
-        echo "overridden variable : $OVERRIDE_VAR"
-        echo "variable from shell environment : $env_var"
-      env:
-        REPOSITORY_VAR: ${{ vars.CODESPECTOR_CHAT_AGENT }}
-        ORGANIZATION_VAR: ${{ vars.CODESPECTOR_CHAT_TOKEN }}
-        OVERRIDE_VAR: ${{ vars.CODESPECTOR_PROMPT_CONTENT }}
+  codespector:
+    runs-on: ubuntu-latest
 
-    - name: ${{ vars.HELLO_WORLD_STEP }}
-      if: ${{ vars.HELLO_WORLD_ENABLED == 'true' }}
-      uses: actions/hello-world-javascript-action@main
-      with:
-        who-to-greet: ${{ vars.GREET_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Codespector
+        env:
+          CODESPECTOR_CHAT_TOKEN: ${{ secrets.CODESPECTOR_CHAT_TOKEN }}
+          CODESPECTOR_SYSTEM_CONTENT: ${{ secrets.CODESPECTOR_SYSTEM_CONTENT }}
+          CODESPECTOR_PROMPT_CONTENT: ${{ secrets.CODESPECTOR_PROMPT_CONTENT }}
+          CODESPECTOR_RESULT_FILE: ${{ secrets.CODESPECTOR_RESULT_FILE }}
+          CODESPECTOR_CHAT_AGENT: ${{ secrets.CODESPECTOR_CHAT_AGENT }}
+        run: |
+          echo "repository variable : $CODESPECTOR_CHAT_TOKEN"
+          echo "organization variable : $CODESPECTOR_SYSTEM_CONTENT"
+          echo "overridden variable : $CODESPECTOR_PROMPT_CONTENT"
+          echo "variable from shell environment : $env_var"
