@@ -3,8 +3,7 @@ from pathlib import Path
 import click
 from environs import Env
 
-from .controller import CodeSpectorController
-from loguru import logger
+from codespector.codespector import CodeSpector
 
 BASE_PATH = Path(__file__).parent.parent
 
@@ -13,9 +12,22 @@ env.read_env(path=str(BASE_PATH / '.env'))
 
 
 @click.option(
+    '--result-file',
+    type=str,
+    help='Set file for saving the result',
+    envvar='CODESPECTOR_RESULT_FILE',
+    show_envvar=True,
+)
+@click.option(
+    '--prompt-content',
+    type=str,
+    help='Prompt content which included to review prompt',
+    envvar='CODESPECTOR_PROMPT_CONTENT',
+    show_envvar=True,
+)
+@click.option(
     '--system-content',
     type=str,
-    default='Ты код ревьювер. Отвечай на русском языке.',
     envvar='CODESPECTOR_SYSTEM_CONTENT',
     show_envvar=True,
     help='Content which used in system field for agent',
@@ -23,8 +35,8 @@ env.read_env(path=str(BASE_PATH / '.env'))
 @click.option(
     '--output-dir',
     type=str,
-    default='codespector',
     envvar='CODESPECTOR_OUTPUT_DIR',
+    default='codespector',
     show_envvar=True,
     help='Select the output directory',
 )
@@ -32,16 +44,13 @@ env.read_env(path=str(BASE_PATH / '.env'))
     '-b',
     '--compare-branch',
     type=str,
-    default='develop',
     help='Select the branch to compare the current one with',
 )
 @click.option(
     '--chat-agent',
-    type=click.Choice(['codestral', 'chatgpt'], case_sensitive=False),
     envvar='CODESPECTOR_CHAT_AGENT',
     show_envvar=True,
-    default='codestral',
-    help='Choose the chat agent to use',
+    help='Choose the chat agent to use you can use one from [codestral, chatgpr, deepseek]. Or set yours chat agent',
 )
 @click.option(
     '--chat-model',
@@ -56,25 +65,11 @@ env.read_env(path=str(BASE_PATH / '.env'))
     envvar='CODESPECTOR_CHAT_TOKEN',
     show_envvar=True,
 )
-@click.option(
-    '--mode',
-    type=click.Choice(['local'], case_sensitive=False),
-    default='local',
-    help='Choose the mode of the application',
-)
 @click.version_option(message='%(version)s')
 @click.command()
 def main(*args, **kwargs):
-    return start(*args, **kwargs)
-
-
-def start(*args, **kwargs):
-    codespector = CodeSpectorController(*args, **kwargs)
-    try:
-        codespector.start()
-        logger.info('Review completed successfully.See result.txt in {} directory', kwargs['output_dir'])
-    except Exception as e:
-        logger.error('Error while review: {}', e)
+    codespector = CodeSpector.create(*args, **kwargs)
+    codespector.review()
 
 
 if __name__ == '__main__':

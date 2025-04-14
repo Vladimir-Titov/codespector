@@ -1,9 +1,11 @@
-import ujson
+import json
 import subprocess
 import os
 
+from codespector.base import BasePipe
 
-class CodeSpectorDataPreparer:
+
+class CodeSpectorDataPreparer(BasePipe):
     def __init__(
         self,
         output_dir: str,
@@ -38,18 +40,18 @@ class CodeSpectorDataPreparer:
         diff_json = {'diff': '\n'.join(filtered_diff)}
         diff_filepath = os.path.join(self.output_dir, self.diff_file)
         with open(diff_filepath, 'w', encoding='utf-8') as f:
-            ujson.dump(diff_json, f, indent=4, ensure_ascii=False)
+            json.dump(diff_json, f, indent=4, ensure_ascii=False)
 
         with open(os.path.join(self.output_dir, self.original_files_tmp), 'r', encoding='utf-8') as f:
-            original_files_data = ujson.load(f)
+            original_files_data = json.load(f)
 
         with open(diff_filepath, 'r', encoding='utf-8') as f:
-            diff_data = ujson.load(f)
+            diff_data = json.load(f)
 
         combined_data = {**original_files_data, **diff_data}
 
         with open(os.path.join(self.output_dir, self.combined_file), 'w', encoding='utf-8') as f:
-            ujson.dump(combined_data, f, indent=4, ensure_ascii=False)
+            json.dump(combined_data, f, indent=4, ensure_ascii=False)
 
     def _prepare_name_only_file(self):
         changed_files = subprocess.run(
@@ -70,12 +72,9 @@ class CodeSpectorDataPreparer:
         filepath = os.path.join(self.output_dir, self.original_files_tmp)
 
         with open(filepath, 'w', encoding='utf-8') as f:
-            ujson.dump(result, f, indent=4, ensure_ascii=False)
+            json.dump(result, f, indent=4, ensure_ascii=False)
 
-    def prepare_data(self) -> str:
+    def start(self):
         self._prepare_dir()
         self._prepare_name_only_file()
         self._prepare_diff_file()
-
-    def start(self):
-        self.prepare_data()
