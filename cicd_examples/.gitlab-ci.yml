@@ -17,7 +17,15 @@ codespector-job:
     - apt-get update && apt-get install -y jq
     - git fetch --no-tags origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - pip install codespector
-    - codespector --chat-token $CODESPECTOR_CHAT_TOKEN --chat-agent codestral --compare-branch origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME...HEAD
+    - | 
+      codespector 
+      --chat-token $CODESPECTOR_CHAT_TOKEN 
+      --chat-agent $CODESPECTOR_CHAT_AGENT 
+      --compare-branch origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME...HEAD
+      --result-file $CODESPECTOR_RESULT_FILE
+      --system-content $CODESCPECTOR_SYSTEM_CONTENT
+      --prompt-content $CODESPECTOR_PROMPT_CONTENT
+
     - |
       COMMENT_CONTENT=$(cat ${CODESPECTOR_RESULT_FILE} | jq -Rs .)
       echo "Posting comment to MR..."

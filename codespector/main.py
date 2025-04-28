@@ -57,7 +57,7 @@ env.read_env(path=str(BASE_PATH / '.env'))
     '--chat-agent',
     envvar='CODESPECTOR_CHAT_AGENT',
     show_envvar=True,
-    help='Choose the chat agent to use you can use one from [codestral, chatgpr, deepseek]. Or set yours chat agent',
+    help='Choose the chat agent to use you can use one from [codestral, chatgpt, deepseek]. Or set yours chat agent',
 )
 @click.option(
     '--chat-model',
